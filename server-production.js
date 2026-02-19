@@ -136,17 +136,25 @@ app.post('/api/image-to-image', upload.single('image'), async (req, res) => {
 
     console.log('Image-to-Image:', prompt);
 
-    const resizedImageBuffer = await sharp(uploadedImage.buffer)
-      .resize(1024, 1024, {
-        fit: 'cover',
-        position: 'center',
-        kernel: sharp.kernel.lanczos3
-      })
-      .jpeg({ quality: 100, chromaSubsampling: '4:4:4' })
-      .toBuffer();
+    // Try to resize with sharp, fallback to original if it fails
+    let imageBuffer = uploadedImage.buffer;
+    try {
+      imageBuffer = await sharp(uploadedImage.buffer)
+        .resize(1024, 1024, {
+          fit: 'cover',
+          position: 'center',
+          kernel: sharp.kernel.lanczos3
+        })
+        .jpeg({ quality: 100, chromaSubsampling: '4:4:4' })
+        .toBuffer();
+      console.log('Image resized with sharp');
+    } catch (sharpError) {
+      console.log('Sharp failed, using original image:', sharpError.message);
+      // Use original image if sharp fails
+    }
 
     const formData = new FormData();
-    formData.append('init_image', resizedImageBuffer, {
+    formData.append('init_image', imageBuffer, {
       filename: 'image.jpg',
       contentType: 'image/jpeg',
     });
@@ -174,7 +182,7 @@ app.post('/api/image-to-image', upload.single('image'), async (req, res) => {
     if (!stabilityResponse.ok) {
       const errorText = await stabilityResponse.text();
       console.error('Stability AI error:', stabilityResponse.status, errorText);
-      throw new Error(`Stability AI error: ${stabilityResponse.status}`);
+      throw new Error(`Stability AI error: ${stabilityResponse.status} - ${errorText}`);
     }
 
     const stabilityData = await stabilityResponse.json();
@@ -193,7 +201,7 @@ app.post('/api/image-to-image', upload.single('image'), async (req, res) => {
 
     throw new Error('No image generated');
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Image-to-Image Error:', error);
     res.status(500).json({
       error: 'Failed to transform image',
       details: error.message

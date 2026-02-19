@@ -1,13 +1,16 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import multer from 'multer';
 import FormData from 'form-data';
 import sharp from 'sharp';
 
+dotenv.config();
+
 const app = express();
 const PORT = 3001;
-const FREEPIK_API_KEY = 'FPSX4213248d7de6762fc2c57ab59c4f7d2a';
-const STABILITY_API_KEY = 'sk-OgLO5tMFCX3uMmEng5KarzkX546TRLE9W6tCzhiNLifCNBwu';
+const FREEPIK_API_KEY = process.env.FREEPIK_API_KEY;
+const STABILITY_API_KEY = process.env.STABILITY_API_KEY;
 
 const upload = multer({
   storage: multer.memoryStorage(),
