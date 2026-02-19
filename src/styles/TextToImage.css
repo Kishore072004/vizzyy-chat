@@ -1,0 +1,45 @@
+/* Shared styles are in App.css */
+.page-content {
+  padding: 2rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .text-input-row {
+    flex-direction: column;
+  }
+
+  .text-input-row textarea {
+    font-size: 0.95rem;
+  }
+
+  .text-input-row button {
+    width: 100%;
+  }
+
+  .example-prompts {
+    grid-template-columns: 1fr;
+  }
+
+  .example-item {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-input-row textarea {
+    font-size: 0.9rem;
+    padding: 0.875rem;
+  }
+
+  .text-input-row button {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .example-item {
+    font-size: 0.85rem;
+    padding: 0.625rem;
+  }
+}

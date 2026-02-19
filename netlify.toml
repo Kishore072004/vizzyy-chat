@@ -1,0 +1,25 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/text-to-image"
+  to = "/.netlify/functions/text-to-image"
+  status = 200
+
+[[redirects]]
+  from = "/api/image-to-image"
+  to = "/.netlify/functions/image-to-image"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "18"
